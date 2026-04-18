@@ -1,0 +1,51 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123459
+      MYSQL_DATABASE: hmdp
+    command: --lower-case-table-names=1
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  # 后端服务（已修复）
+  hmdp-api:
+    build: .          # 关键：从当前目录的 Dockerfile 构建
+    container_name: hmdp-api
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hmdp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123459
+
+  # 前端 Nginx
+  hmdp-web:
+    image: nginx:alpine
+    container_name: hmdp-web
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx-1.18.0/html:/usr/share/nginx/html
+      - ./nginx-1.18.0/conf/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - hmdp-api
+
+volumes:
+  mysql-data:
