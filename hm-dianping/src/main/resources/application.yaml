@@ -1,46 +1,27 @@
-
-services:
+server:
+  port: 8081
+spring:
+  application:
+    name: hmdp
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver  # 升级成MySQL8驱动（更稳定）
+    url: jdbc:mysql://127.0.0.1:3306/hmdp?useSSL=false&serverTimezone=UTC
+    username: root
+    password: 123459  # 你docker里设置的密码
   redis:
-    image: redis:7-alpine
-    container_name: hm-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    command: ["redis-server", "--appendonly", "yes"]
-
-  mysql:
-    image: mysql:8.0
-    container_name: hm-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: 123459
-      MYSQL_DATABASE: hm_dianping
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-  backend:
-    build:
-      context: ./backend
-    container_name: hm-backend
-    depends_on:
-      - mysql
-      - redis
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
-
-  frontend:
-    build:
-      context: ./frontend
-    container_name: hm-frontend
-    depends_on:
-      - backend
-    ports:
-      - "80:80"
-
-volumes:
-  redis_data:
-  mysql_data:
+    host: 127.0.0.1  # 这里改成本地！！！
+    port: 6379
+    password:
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
+  jackson:
+    default-property-inclusion: non_null
+mybatis-plus:
+  type-aliases-package: com.hmdp.entity
+logging:
+  level:
+    com.hmdp: debug
