@@ -4,13 +4,13 @@ spring:
   application:
     name: hmdp
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver  # 升级成MySQL8驱动（更稳定）
-    url: jdbc:mysql://127.0.0.1:3306/hmdp?useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/hmdp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
     username: root
     password: 123459  # 你docker里设置的密码
   redis:
     host: 127.0.0.1  # 这里改成本地！！！
-    port: 6379
+    port: 6380
     password:
     lettuce:
       pool:
