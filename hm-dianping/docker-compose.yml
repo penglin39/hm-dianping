@@ -48,7 +48,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./nginx-1.18.0/html:/usr/share/nginx/html# 正确挂载！
+      - ./nginx-1.18.0/html:/usr/share/nginx/html
       - ./nginx-1.18.0/conf/nginx.conf:/etc/nginx/nginx.conf
 
 volumes:
